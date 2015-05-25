@@ -150,6 +150,9 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.MovieViewHolde
      * We get the Drawable Id on the clicked item and perform the related action. We use an AsyncTask
      * to simulate a long process.
      *
+     * Once the AsyncTask is complete {@see onPostExecute}, we remove the drawable/image on the list
+     * and add the another image mapping it to the position of the object.
+     *
      * Use Case:
      * When a user clicks on add button, make a HTTP request and store the selected movie in the
      * watchlist table then get the response from the server and update the icon based on the response
@@ -159,7 +162,7 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.MovieViewHolde
      *
      * R.drawable.movie_add_touch: Add the selected movie to the DB
      * R.drawable.movie_added_touch: Remove the Movie from the DB
-     * R.drawable.movie_error_touch: An error occured performing your request. Retry.
+     * R.drawable.movie_error_touch: An error occurred performing your request. Retry.
      *
      *
      * @param position         clicked object position
