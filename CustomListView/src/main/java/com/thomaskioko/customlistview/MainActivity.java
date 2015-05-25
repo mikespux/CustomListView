@@ -40,6 +40,7 @@ public class MainActivity extends AppCompatActivity {
      * Used for logging purposes.
      */
     private static final String TAG = MainActivity.class.getSimpleName();
+    private static final int MY_SOCKET_TIMEOUT_MS = 50000;
 
     private ProgressDialog mProgressDialog;
     private List<Movie> mMovieList = new ArrayList<>();
@@ -128,7 +129,14 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
 
-
+        /**
+         *   Set a retry policy in case of SocketTimeout & ConnectionTimeout.
+         *   Exceptions Volley does retry for you if you have specified the policy.
+         */
+        jsonArrayRequest.setRetryPolicy(new DefaultRetryPolicy(
+                MY_SOCKET_TIMEOUT_MS,
+                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
 
         // Adding request to request queue
         AppController.getInstance().addToRequestQueue(jsonArrayRequest);
