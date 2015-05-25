@@ -4,6 +4,10 @@ This is a simple project that demonstrates how you can click on a item on a cust
 a task. I will be using RecyclerView and ViewHolder pattern in the ListAdapter class. It's a simple
 hack to an issue that has been bugging me.
 
+This projects' core concept is borrowed from [AndroidHives CustomListView](http://www.androidhive.info/2014/07/android-custom-listview-with-image-and-text-using-volley/) .
+I added the AddMovie functionality which allows you to click on the Add button on a listItem.
+
+For more information check out my [blog post](http://www.thomaskioko.com/)
 
 # Final Result
 
