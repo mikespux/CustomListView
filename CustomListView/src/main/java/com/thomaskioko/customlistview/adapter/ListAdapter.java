@@ -43,7 +43,10 @@ import java.util.List;
 public class ListAdapter extends RecyclerView.Adapter<ListAdapter.MovieViewHolder> {
 
     private List<Movie> mMovieList;
-    protected LinkedList<Integer> actions;
+    /**
+     * This LinkedList is used to map the position of the item and the image
+     */
+    protected LinkedList<Integer> drawableLinkedList;
     private Context mContext;
     private ImageLoader mImageLoader = AppController.getInstance().getImageLoader();
 
@@ -52,19 +55,19 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.MovieViewHolde
      *
      * @param context      Application context
      * @param followerList Follower List objects
-     * @param actions      Drawable item .
+     * @param drawableLinkedList      Drawable item .
      */
-    public ListAdapter(Context context, List<Movie> followerList, LinkedList<Integer> actions) {
+    public ListAdapter(Context context, List<Movie> followerList, LinkedList<Integer> drawableLinkedList) {
         this.mContext = context;
         this.mMovieList = followerList;
-        this.actions = actions;
+        this.drawableLinkedList = drawableLinkedList;
     }
 
     @Override
     public void onBindViewHolder(MovieViewHolder holder, final int position) {
 
         Movie movie = mMovieList.get(position);
-        final int actionDrawableId = this.actions.get(position);
+        final int actionDrawableId = this.drawableLinkedList.get(position);
 
         holder.thumbNail.setImageUrl(movie.getThumbnailUrl(), mImageLoader);
         holder.title.setText(movie.getTitle());
@@ -79,12 +82,20 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.MovieViewHolde
                 genreStr.length() - 2) : genreStr;
         holder.genre.setText(genreStr);
         holder.year.setText(String.valueOf(movie.getYear()));
+        /**
+         * Set OnClickListener on the Button.
+         * We pass in 3 parameters:
+         * @param position :Position of the object on the List
+         * @param mMovieList Movie Object
+         * @param actionDrawableId Drawable ID
+         */
         holder.imageViewAddMovie.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 onMemberClick(position, mMovieList, actionDrawableId);
             }
         });
+        //Set the Image Resource
         holder.imageViewAddMovie.setImageResource(actionDrawableId);
     }
 
@@ -137,9 +148,19 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.MovieViewHolde
     /**
      * This method handles onclick behaviour when a user clicks on the add movie button.
      * We get the Drawable Id on the clicked item and perform the related action. We use an AsyncTask
-     * to simulate a long process. For instance, when a user clicks on add button, make a HTTP request
-     * and store the selected movie in the watchlist table then get the response from the server and
-     * update the icon based on the response from the server.
+     * to simulate a long process.
+     *
+     * Use Case:
+     * When a user clicks on add button, make a HTTP request and store the selected movie in the
+     * watchlist table then get the response from the server and update the icon based on the response
+     * from the server.
+     *
+     * We Use a Switch case to get the Drawable ID which will determine what action to perform.
+     *
+     * R.drawable.movie_add_touch: Add the selected movie to the DB
+     * R.drawable.movie_added_touch: Remove the Movie from the DB
+     * R.drawable.movie_error_touch: An error occured performing your request. Retry.
+     *
      *
      * @param position         clicked object position
      * @param followerList     Object List
@@ -168,12 +189,12 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.MovieViewHolde
                         super.onPostExecute(result);
                         if (result.equals("Complete")) {
                             Toast.makeText(mContext, follower.getTitle(), Toast.LENGTH_SHORT).show();
-                            actions.remove(position);
-                            actions.add(position, R.drawable.movie_added_touch);
+                            drawableLinkedList.remove(position);
+                            drawableLinkedList.add(position, R.drawable.movie_added_touch);
                             notifyDataSetChanged();
                         } else {
-                            actions.remove(position);
-                            actions.add(position, R.drawable.movie_error_touch);
+                            drawableLinkedList.remove(position);
+                            drawableLinkedList.add(position, R.drawable.movie_error_touch);
                             Toast.makeText(mContext, mContext.getString(R.string.text_something_went_wrong),
                                     Toast.LENGTH_SHORT).show();
                         }
@@ -199,12 +220,12 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.MovieViewHolde
                     protected void onPostExecute(String result) {
                         super.onPostExecute(result);
                         if (result.equals("Complete")) {
-                            actions.remove(position);
-                            actions.add(position, R.drawable.movie_add_touch);
+                            drawableLinkedList.remove(position);
+                            drawableLinkedList.add(position, R.drawable.movie_add_touch);
                             notifyDataSetChanged();
                         } else {
-                            actions.remove(position);
-                            actions.add(position, R.drawable.movie_error_touch);
+                            drawableLinkedList.remove(position);
+                            drawableLinkedList.add(position, R.drawable.movie_error_touch);
                             Toast.makeText(mContext, "Something went wrong", Toast.LENGTH_SHORT).show();
                         }
                     }
@@ -228,12 +249,12 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.MovieViewHolde
                     protected void onPostExecute(String result) {
                         super.onPostExecute(result);
                         if (result.equals("Complete")) {
-                            actions.remove(position);
-                            actions.add(position, R.drawable.movie_added_touch);
+                            drawableLinkedList.remove(position);
+                            drawableLinkedList.add(position, R.drawable.movie_added_touch);
                             notifyDataSetChanged();
                         } else {
-                            actions.remove(position);
-                            actions.add(position, R.drawable.movie_error_touch);
+                            drawableLinkedList.remove(position);
+                            drawableLinkedList.add(position, R.drawable.movie_error_touch);
                             Toast.makeText(mContext, "Something went wrong", Toast.LENGTH_SHORT).show();
                         }
                     }
