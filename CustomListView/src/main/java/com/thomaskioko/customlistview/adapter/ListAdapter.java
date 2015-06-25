@@ -23,10 +23,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.android.volley.toolbox.ImageLoader;
-import com.android.volley.toolbox.NetworkImageView;
+import com.bumptech.glide.Glide;
 import com.thomaskioko.customlistview.R;
-import com.thomaskioko.customlistview.app.AppController;
 import com.thomaskioko.customlistview.model.Movie;
 
 import java.util.LinkedList;
@@ -48,7 +46,6 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.MovieViewHolde
      */
     protected LinkedList<Integer> drawableLinkedList;
     private Context mContext;
-    private ImageLoader mImageLoader = AppController.getInstance().getImageLoader();
 
     /**
      * Default Constructor
@@ -68,10 +65,10 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.MovieViewHolde
 
         Movie movie = mMovieList.get(position);
         final int actionDrawableId = this.drawableLinkedList.get(position);
-
-        holder.thumbNail.setImageUrl(movie.getThumbnailUrl(), mImageLoader);
         holder.title.setText(movie.getTitle());
         holder.rating.setText("Rating: " + String.valueOf(movie.getRating()));
+        //Use Glide to load the Image
+        Glide.with(mContext).load(movie.getThumbnailUrl()).centerCrop().into(holder.thumbNail);
 
         // genre
         String genreStr = "";
@@ -126,7 +123,7 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.MovieViewHolde
      * {@see <a href="http://developer.android.com/training/improving-layouts/smooth-scrolling.html</a>}
      */
     public static class MovieViewHolder extends RecyclerView.ViewHolder {
-        NetworkImageView thumbNail;
+        ImageView thumbNail;
         ImageView imageViewAddMovie;
         TextView title;
         TextView rating;
@@ -136,7 +133,7 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.MovieViewHolde
         public MovieViewHolder(View itemView) {
             super(itemView);
 
-            thumbNail = (NetworkImageView) itemView.findViewById(R.id.thumbnail);
+            thumbNail = (ImageView) itemView.findViewById(R.id.thumbnail);
             title = (TextView) itemView.findViewById(R.id.title);
             rating = (TextView) itemView.findViewById(R.id.rating);
             genre = (TextView) itemView.findViewById(R.id.genre);
